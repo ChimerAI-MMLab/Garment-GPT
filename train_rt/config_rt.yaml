@@ -1,0 +1,31 @@
+rt_model:
+  input_dim: 7
+  latent_dim: 256
+  hidden_dim: 512
+  num_layers: 4
+  codebook:
+    size: 1024
+    num_quantizers: 3
+    decay: 0.99
+    is_fsq: False
+    fsq_levels: [8, 8, 8]
+
+train:
+  train_data_dir: []
+  gcd_root_dir:  ["/data/codec_data/GarmentCodeData","/data/qj/OwnGCD/simulations"]
+  gcd_split_json: ["/data/qj/gcd_data_split/official_train_test_split_with_random.json","/data/qj/gcd_data_split/own_train_test_split.json"]
+  batchsize: 512
+  lr: 0.0005
+  epochs: 50
+  loss_weight: [1, 1, 0.25] # trans_loss, rot_loss, commit_loss
+  model_save_dir: /data/qj/codec_codebook/train_rt/RESULTS/gcd_cosine/saved_model_gcd_cosine
+
+test:
+  test_data_dir: []
+  batchsize: 512
+  indices_distribution_dir: "/data/qj/codec_codebook/train_rt/RESULTS/gcd_cosine/indices_dist_gcd_cosine"
+  visualization_dir: /data/qj/codec_codebook/train_rt/RESULTS/gcd_cosine/visualization_gcd_cosine
+  test_model_path: /data/qj/codec_codebook/train_rt/RESULTS/gcd_cosine/saved_model_gcd_cosine/best_model.pth
+
+
+tensorboard_log_dir: "/data/qj/codec_codebook/train_rt/RESULTS/gcd_cosine/logs_gcd_cosine"

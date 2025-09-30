@@ -1,0 +1,60 @@
+sample:
+  sample_point_num: 32
+
+codec:
+  is_transformer: False
+  input_dim: 2
+  latent_dim: 512
+  hidden_dim: 1024
+  num_layers: 8
+  n_heads: 4
+  num_points_decode: 3
+  num_quantizers: 5
+
+codebook:
+  size: 1024
+  latent_dim: 512
+  decay: 0.99
+  is_fsq: False
+  
+split_file: ["/data/qj/gcd_data_split/official_train_test_split.json","/data/qj/gcd_data_split/own_train_test_split.json"]
+gcd_root_dir: ["/data/codec_data/GarmentCodeData","/data/qj/OwnGCD/simulations"]
+
+# split_file: ["/data/qj/gcd_data_split/official_train_test_split.json"]
+# gcd_root_dir: ["/data/qj/GCDv2/GarmentCodeData"]
+
+train:
+  # train_data_dir: ["/data/codec_data/zenodo/train","/data/codec_data/SewFactory"]
+  # train_data_dir: ["/data/codec_data/zenodo/train","/data/codec_data/SewFactory"] # 注意不要把GarmentCodeData也加进来，应该在gcd_root_dir中指定
+  normalization_method: linear
+  batchsize: 2048
+  epoch: 80
+  dataset_size: 1000000
+  codec_lr: 0.001  # transformer:3e-4   res:1e-3
+  codebook_lr: 0.0001 # codec_lr / 10 (if codebook is learnable)
+  num_workers: 1
+  loss_weight: [0.1, 50, 5, 0.1, 1, 2] # inter_loss, vertice_loss, cls_loss, commit_loss, codebook_loss(if applicable), control point loss
+  # loss_weight: [0, 1, 0, 0, 0, 0] # inter_loss, vertice_loss, cls_loss, commit_loss, codebook_loss(if applicable), control point loss
+  model_save_dir: /data/qj/codec/RESULTS/raw_gcd_data/allcubic/comparison_new/1024q5d99nl8ld512/saved_model
+  continue_training: True
+  checkpoint_path: /data/qj/codec/RESULTS/raw_gcd_data/allcubic/comparison_new/1024q5d99nl8ld512/saved_model/model_epoch_35_0.3634.pth
+  augment:
+    enabled: False
+    augment_prob: 0.8
+    ops_probs: [0.35, 0.15, 0.15, 0.35]
+    scale_range: [0.9, 1.2]
+    rotate_range: [-30, 30]
+    translate_range: [0, 0.5]
+
+test:
+  # test_data_dir: /data/codec_data/zenodo/test
+  visualization_dir: /data/qj/codec/RESULTS/raw_gcd_data/allcubic/comparison_new/1024q5d99nl8ld512/edge_visualization
+  indices_distribution_dir: /data/qj/codec/RESULTS/raw_gcd_data/allcubic/comparison_new/1024q5d99nl8ld512/indices_distribution
+  loss_weight: [0.1, 5, 5, 0.25, 1, 5] # inter_loss, vertice_loss, cls_loss, commit_loss, codebook_loss(if applicable), control point loss
+  batchsize: 512
+  num_workers: 4
+  checkpoint_path: checkpoints/vqvae/best_model.pth
+  augment:
+    enabled: False  
+
+tensorboard_run_dir: /data/qj/codec/RESULTS/raw_gcd_data/allcubic/comparison_new/1024q5d99nl8ld512/runs
